@@ -3,10 +3,11 @@
 # part of pybacktest package: https://github.com/ematvey/pybacktest
 
 """ Functions for calculating performance statistics and reporting """
-
 import pandas
 import numpy
-
+import six
+if six.PY3:
+    from past.builtins import xrange
 
 
 start = lambda eqd: eqd.index[0]

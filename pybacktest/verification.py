@@ -1,6 +1,12 @@
+from __future__ import print_function
+
 import pandas
+import six
 import sys
+
 from . import Backtest
+if six.PY3:
+    from past.builtins import xrange
 
 
 def iter_verify(strategy_fn, data, window_size):
@@ -13,7 +19,7 @@ def iter_verify(strategy_fn, data, window_size):
     sp = None
     mis_cur = {}
     mis_prev = {}
-    print 'iterative verification'
+    print('iterative verification')
     for i in range(window_size, len(data)):
         s = Backtest(strategy_fn(data.iloc[i-window_size:i])).signals
         if (not sp is None) and (sp != s.iloc[-2]).any():
@@ -32,7 +38,7 @@ def iter_verify(strategy_fn, data, window_size):
     if len(df):
         return df
     else:
-        print 'valid'
+        print('valid')
 
 
 def frontal_iterative_signals(strategy_fn, data, window_size, verbose=True):

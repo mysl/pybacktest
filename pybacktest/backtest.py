@@ -3,6 +3,7 @@
 # part of pybacktest package: https://github.com/ematvey/pybacktest
 
 from __future__ import print_function
+from six import iteritems
 import time
 
 from pandas.lib import cache_readonly
@@ -85,7 +86,7 @@ class Backtest(object):
         To get a hang of it, check out the examples.
 
         """
-        self._dataobj = dict([(k.lower(), v) for k, v in dataobj.iteritems()])
+        self._dataobj = dict([(k.lower(), v) for k, v in iteritems(dataobj)])
         self._sig_mask_ext = signal_fields
         self._pr_mask_ext = price_fields
         self.name = name
