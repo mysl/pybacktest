@@ -181,7 +181,7 @@ class Backtest(object):
         eq.plot(color='red', label='strategy')
         ix = self.ohlc.ix[eq.index[0]:eq.index[-1]].index
         price = self.ohlc.C
-        (price[ix] - price[ix][0]).resample('W', how='first').dropna() \
+        (price[ix] - price[ix][0]).resample('W').first().dropna() \
             .plot(color='black', alpha=0.5, label='underlying')
 
         import matplotlib.pylab as pylab

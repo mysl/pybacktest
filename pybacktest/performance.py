@@ -22,7 +22,7 @@ average_loss = lambda eqd: eqd[eqd < 0].mean()
 winrate = lambda eqd: float(sum(eqd > 0)) / len(eqd)
 payoff = lambda eqd: eqd[eqd > 0].mean() / -eqd[eqd < 0].mean()
 pf = PF = lambda eqd: abs(eqd[eqd > 0].sum() / eqd[eqd < 0].sum())
-maxdd = lambda eqd: (eqd.cumsum() - pandas.expanding_max(eqd.cumsum())).abs().max()
+maxdd = lambda eqd: (eqd.cumsum() - eqd.cumsum().expanding(min_periods=1).max()).abs().max()
 rf = RF = lambda eqd: eqd.sum() / maxdd(eqd)
 trades = lambda eqd: len(eqd[eqd != 0])
 _days = lambda eqd: eqd.resample('D', how='sum').dropna()
@@ -42,7 +42,7 @@ def sortino(eqd):
 
 def ulcer(eqd):
     eq = eqd.cumsum()
-    return (((eq - pandas.expanding_max(eq)) ** 2).sum() / len(eq)) ** 0.5
+    return (((eq - eq.expanding(min_periods=1).max()) ** 2).sum() / len(eq)) ** 0.5
 
 
 def upi(eqd, risk_free=0):
@@ -54,7 +54,7 @@ UPI = upi
 def mpi(eqd):
     """ Modified UPI, with enumerator resampled to months (to be able to
     compare short- to medium-term strategies with different trade frequencies. """
-    return eqd.resample('M', how='sum').mean() / ulcer(eqd)
+    return eqd.resample('M').sum().mean() / ulcer(eqd)
 MPI = mpi
 
 

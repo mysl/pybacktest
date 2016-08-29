@@ -5,7 +5,7 @@
 """ Set of data-loading helpers """
 
 import pandas as pd
-import pandas.io.data as web
+import pandas_datareader.data as web
 
 
 def load_from_yahoo(ticker='SPY', start='1900', adjust_close=False):
