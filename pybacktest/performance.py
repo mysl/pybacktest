@@ -23,10 +23,10 @@ average_loss = lambda eqd: eqd[eqd < 0].mean()
 winrate = lambda eqd: float(sum(eqd > 0)) / len(eqd)
 payoff = lambda eqd: eqd[eqd > 0].mean() / -eqd[eqd < 0].mean()
 pf = PF = lambda eqd: abs(eqd[eqd > 0].sum() / eqd[eqd < 0].sum())
-maxdd = lambda eqd: (eqd.cumsum() - eqd.cumsum().expanding(min_periods=1).max()).abs().max()
-rf = RF = lambda eqd: eqd.sum() / maxdd(eqd)
+maxdd = lambda eqd: float((eqd.cumsum() - eqd.cumsum().expanding(min_periods=1).max()).abs().max())
+rf = RF = lambda eqd: float(eqd.sum() / maxdd(eqd))
 trades = lambda eqd: len(eqd[eqd != 0])
-_days = lambda eqd: eqd.resample('D', how='sum').dropna()
+_days = lambda eqd: eqd.resample('D').sum().dropna()
 
 
 def sharpe(eqd):
@@ -114,8 +114,11 @@ def performance_summary(equity_diffs, quantile=0.99, precision=4):
             'sharpe': round(eqd.mean() / eqd.std(), precision),
             'sortino': round(eqd.mean() / eqd[eqd < 0].std(), precision),
             'maxdd': round(maxdd(eqd), precision),
-            'WCDD (monte-carlo %s quantile)' % quantile: round(mcmdd(eqd, quantile=quantile), precision),
+            # it looks python3 yaml does not represent numpy scalar well, so we need to convert to float explicitly here
+            # and in some other places such as maxdd, rf etc.
+            'WCDD (monte-carlo %s quantile)' % quantile: round(float(mcmdd(eqd, quantile=quantile)), precision),
             'UPI': round(UPI(eqd), precision),
-            'MPI': round(MPI(eqd), precision),
+            'MPI': round(MPI(eqd), precision)
             }
         }
+
